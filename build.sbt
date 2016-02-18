@@ -12,7 +12,7 @@ libraryDependencies += "org.apache.hadoop" % "hadoop-common" % "2.7.1" % "provid
 
 libraryDependencies += "org.apache.hadoop" % "hadoop-client" % "2.7.1"
 
-libraryDependencies += "org.apache.spark" % "spark-core_2.10" % "1.5.2" % "provided"
+libraryDependencies += "org.apache.spark" % "spark-core_2.10" % "1.5.2"
 
 assemblyMergeStrategy in assembly := {
   case PathList("javax", "servlet", xs @ _*) => MergeStrategy.last
