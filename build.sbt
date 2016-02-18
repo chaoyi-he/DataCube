@@ -6,7 +6,7 @@ scalaVersion := "2.10.4"
 
 ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) }
 
-libraryDependencies += "org.scala-lang" % "scala-compiler" % "2.10.4" % "provided"
+libraryDependencies += "org.scala-lang" % "scala-compiler" % "2.10.4"
 
 libraryDependencies += "org.apache.hadoop" % "hadoop-common" % "2.7.1" % "provided" excludeAll ExclusionRule(organization = "javax.servlet")
 
