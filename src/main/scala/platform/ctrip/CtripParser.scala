@@ -60,10 +60,4 @@ object CtripParser extends App {
     str1
   }
 
-  // get the date: year-month-date
-  def DateFormat(time:String):String={
-     var sdf= new SimpleDateFormat("yyyy-MM-dd")
-     var date = sdf.format(new Date((time.toLong)))
-     date
-  }
 }
