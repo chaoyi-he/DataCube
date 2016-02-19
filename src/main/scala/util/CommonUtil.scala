@@ -38,8 +38,14 @@ object CommonUtil {
   }
 
   def parseDate(timeStamp: String):String = {
+    var date = ""
     val sdf: SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH")
-    val date: String = sdf.format(timeStamp.toLong)
+    try {
+      date = sdf.format(timeStamp.toLong)
+    } catch {
+      case e: Exception =>
+        return "not a timestamp"
+    }
     date
   }
 
