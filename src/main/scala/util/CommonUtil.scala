@@ -24,10 +24,8 @@ object CommonUtil {
       "pc"
     }else if(str.contains("python-requests")){
       "python-requests"
-    }
-    else {
-      println(str)
-      "other"
+    } else {
+      str
     }
   }
 }

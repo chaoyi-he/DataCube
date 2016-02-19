@@ -1,7 +1,6 @@
 package platform.ch
 
 import java.text.SimpleDateFormat
-import java.util.{Date, Calendar}
 
 import org.apache.spark.{SparkContext, SparkConf}
 import util.CommonUtil
