@@ -21,7 +21,6 @@ object CommonUtil {
     } else if(str.contains("(iPhone")||str.contains("iPod")||str.contains("iOS")||str.contains("(iPad;")||str.contains("iPad4")){
       "ios"
     } else if(str.contains("Android")||str.contains("MIDP")){
-      println("Android")
       "android"
     }else if(str.contains("Windows NT")||str.contains("LBBROWSER")||str.contains("X11")||str.contains("(Macintosh;")){
       "pc"

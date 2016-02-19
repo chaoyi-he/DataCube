@@ -11,36 +11,61 @@ import org.apache.spark.{SparkContext, SparkConf}
 //根据样本数据: 统计每个设备上各个城市往返的航班的个数
 object CtripParser extends App {
 
-  val conf =  new SparkConf().setMaster("local").setAppName("CTRIP")
+  var source = "file:///Users/yang/code/TEMP/000000_0"
+  var target = "file:///Users/yang/code/TEMP/result"
+  if (args.length > 0) {
+    source = args(0)
+    target = args(1)
+  }
+
+  val conf =  new SparkConf().setAppName("CTRIP")
   val sc = new SparkContext(conf)
 
-  sc.textFile("/Users/yang/code/TEMP/000000_0").map(_.split("\t")).filter(x => x(3).contains("ctrip.com/")&&(x(2)!="NoDef")).filter(x=> parse(x(3)) != "null").
-    map(x=>(CommonUtil.getPrefix(x) + parse(x(3)),1)).reduceByKey(_+_).sortBy(_._2,ascending = false).foreach(println)
+  sc.textFile(source)
+    .map(_.split("\t"))
+    .filter(_.length == 5)
+    .filter(x => x(3).contains("ctrip.com/") && (x(2)!="NoDef"))
+    .filter(x=> parse(x(3)) != "null")
+    .map(x=>(CommonUtil.getPrefix(x) + parse(x(3)),1))
+    .reduceByKey(_+_)
+    .sortBy(_._2,ascending = false)
+    .saveAsTextFile(target)
 
   def parse(str:String): String ={
+
     if(str.contains("flights.ctrip.com/booking")){
+
       val str1 = str.split("flights.ctrip.com/booking/")
       var rightStr = ""
+      if (str1.length < 2)
+        return "null"
+
       if(str1(1).contains("booking")){ //some urls contain two "booking"
         val str2 = str1(1).split("booking/")
+        if (str2.length < 2)
+          return "null"
         rightStr=str2(1)
-      }
-      else{
+      } else {
         rightStr=str1(1)
       }
+
       val gt=parseCity(rightStr)
+
       if(getCity(gt)!="airport") { // filter the "airport"
         getCity(gt)
-      }
-      else
+      } else {
         "null"
-    }
-    else
+      }
+
+    } else {
       "null"
+    }
   }
 
   // according the seventh char
   def parseCity(str:String):String={
+    if (str.length < 7)
+      return "null"
     val st= str.charAt(7)
     st match{
       case '/' => str
