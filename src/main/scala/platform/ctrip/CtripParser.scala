@@ -1,48 +1,68 @@
 package platform.ctrip
 
 import java.util
-import platform.ctrip.Parser
+import _root_.util.CommonUtil
 import org.apache.spark.{SparkContext, SparkConf}
 import sun.misc.BASE64Decoder
-import scala.util.matching.Regex
+
 
 /**
   * Created by niujiaojiao on 2016/2/19.
   */
 
-//统计 样本数据 每个设备上各个城市往返的航班的个数
-object CtripParser extends App{
+//根据样本数据: 统计每个设备上各个城市往返的航班的个数
+object CtripParser extends App {
+
   val conf =  new SparkConf().setMaster("local").setAppName("CTRIP")
   val sc = new SparkContext(conf)
-  sc.textFile("E:/CODE/000000_0").map(_.split("\t")).filter(x => x(3).contains("ctrip.com/")&&(x(2)!="NoDef")).map(x
-  =>(parseDevice(x(2))+":  "+parse(x(3)).filter(x=> x!=null),1)).
-    reduceByKey(_+_).sortBy(_._2,ascending = false).foreach(println)
+
+  sc.textFile("E:/CODE/000000_0").map(_.split("\t")).filter(x => x(3).contains("ctrip.com/")&&(x(2)!="NoDef")).filter(x=>(parse(x(3))!="null")).
+    map(x=>(parseDevice(x(2))+":  "+parse(x(3)),1)).reduceByKey(_+_).sortBy(_._2,ascending = false).foreach(println)
 
   def parseDevice(str:String):String={
-    val rs = Parser.base64Paser(str)
-    Parser.equip(rs)
+    val rs = CommonUtil.decodeBase64(str)
+    CommonUtil.getDevice(rs)
   }
- // def parse1(str:String): String = {
-    //val regex2 = new Regex("\\w[3]\-\\w[3]")
 
- //   str match{
-     //case regex2(num,str) => str
-     // case _=> "not matched"
-   // }
- // }
   def parse(str:String): String ={
     if(str.contains("flights.ctrip.com/booking")){
-      val str1= str.split("/booking/")
-      val cityGo = str1(1).substring(0,3)
-      val cityBack= str1(1).substring(4,7)
-      if((cityGo.toString.length==3) && (cityBack.toString.length==3)){
-        str+"********"+cityGo+"*"+cityBack
+      var str1= str.split("flights.ctrip.com/booking/")
+      var leftString = ""
+      if(str1(1).contains("booking")){ //some urls contain two "booking"
+        val str2 = str1(1).split("booking/")
+        leftString=str2(1)
+      }
+      else{
+        leftString=str1(1)
+      }
+      val gt=parseCity(leftString)
+      if(getCity(gt)!="airport") { // filter the "airport"
+        return getCity(gt)
       }
       else
         "null"
     }
-    else{
+    else
       "null"
+  }
+
+  // according the seventh char
+  def parseCity(str:String):String={
+    val st= str.charAt(7)
+    st match{
+      case '/' => return str
+      case '-' => return str
+      case _ =>return "null"
     }
   }
+
+  //get the first seven string : xxx-xxx
+  def getCity(str:String):String= {
+    var str1 = "null"
+    if (str.toString != "null") {
+      str1 = str.substring(0,7)
+    }
+    str1
+  }
+
 }
