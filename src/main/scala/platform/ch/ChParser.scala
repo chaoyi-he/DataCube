@@ -22,6 +22,7 @@ object ChParser {
 
     sc.textFile(source)
       .map(_.split("\t"))
+      .filter(_.length == 5)
       .filter(x => x(2) != "NoDef" && x(3).contains("flights.ch.com/"))
       .filter(x => filter(x(3)))
       .map(x=>(CommonUtil.getPrefix(x) + parse(x(3)),1))
