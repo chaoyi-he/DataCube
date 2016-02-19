@@ -1,6 +1,8 @@
 package platform.ctrip
 
 import java.util
+import java.util.Date
+import java.text.SimpleDateFormat
 import _root_.util.CommonUtil
 import org.apache.spark.{SparkContext, SparkConf}
 import sun.misc.BASE64Decoder
@@ -17,7 +19,8 @@ object CtripParser extends App {
   val sc = new SparkContext(conf)
 
   sc.textFile("E:/CODE/000000_0").map(_.split("\t")).filter(x => x(3).contains("ctrip.com/")&&(x(2)!="NoDef")).filter(x=>(parse(x(3))!="null")).
-    map(x=>(parseDevice(x(2))+":  "+parse(x(3)),1)).reduceByKey(_+_).sortBy(_._2,ascending = false).foreach(println)
+     map(x=>("Date: "+DateFormat(x(0))+" Device: "+parseDevice(x(2))+":  "+parse(x(3)),1)).
+      reduceByKey(_+_).sortBy(_._2,ascending = false).foreach(println)
 
   def parseDevice(str:String):String={
     val rs = CommonUtil.decodeBase64(str)
@@ -65,4 +68,10 @@ object CtripParser extends App {
     str1
   }
 
+  // get the date: year-month-date
+  def DateFormat(time:String):String={
+     var sdf= new SimpleDateFormat("yyyy-MM-dd")
+     var date = sdf.format(new Date((time.toLong)))
+     date
+  }
 }
