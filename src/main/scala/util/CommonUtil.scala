@@ -1,5 +1,7 @@
 package util
 
+import java.text.SimpleDateFormat
+
 import sun.misc.BASE64Decoder
 
 /**
@@ -19,6 +21,7 @@ object CommonUtil {
     } else if(str.contains("(iPhone")||str.contains("iPod")||str.contains("iOS")||str.contains("(iPad;")||str.contains("iPad4")){
       "ios"
     } else if(str.contains("Android")||str.contains("MIDP")){
+      println("Android")
       "android"
     }else if(str.contains("Windows NT")||str.contains("LBBROWSER")||str.contains("X11")||str.contains("(Macintosh;")){
       "pc"
@@ -27,5 +30,20 @@ object CommonUtil {
     } else {
       str
     }
+  }
+
+  def parseDevice(str:String):String={
+    val rs = CommonUtil.decodeBase64(str)
+    CommonUtil.getDevice(rs)
+  }
+
+  def parseDate(timeStamp: String):String = {
+    val sdf: SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH")
+    val date: String = sdf.format(timeStamp.toLong)
+    date
+  }
+
+  def getPrefix(arr: Array[String]):String = {
+    parseDate(arr(0)) + ":" + parseDevice(arr(2)) + ":"
   }
 }
