@@ -13,7 +13,7 @@ object Parser extends App {
   val conf =  new SparkConf().setMaster("local").setAppName("CTRIP")
   val sc = new SparkContext(conf)
 
-  sc.textFile("/Users/hechaoyi/Downloads/000000_0").map(_.split("\t")).filter(x => x(3).contains("ctrip.com/")&&(x(2)!="NoDef")).map(x => base64Paser(x(2))).
+  sc.textFile("E:/CODE/000000_0").map(_.split("\t")).filter(x => x(3).contains("ctrip.com/")&&(x(2)!="NoDef")).map(x => base64Paser(x(2))).
   map(x => (equip(x), 1)).reduceByKey(_+_).sortBy(_._2, ascending = false).foreach(println)
 
   def base64Paser(base64String : String): String = {
