@@ -1,27 +1,19 @@
-package platform.ctrip
+package util
 
-import java.util
-import org.apache.spark.{SparkContext, SparkConf}
 import sun.misc.BASE64Decoder
 
 /**
   * Created by yangshuai on 2016/2/18.
   * update by hechaoyi
   */
-object Parser extends App {
+object CommonUtil {
 
-  val conf =  new SparkConf().setMaster("local").setAppName("CTRIP")
-  val sc = new SparkContext(conf)
-
-  sc.textFile("/Users/hechaoyi/Downloads/000000_0").map(_.split("\t")).filter(x => x(3).contains("ctrip.com/")&&(x(2)!="NoDef")).map(x => base64Paser(x(2))).
-  map(x => (equip(x), 1)).reduceByKey(_+_).sortBy(_._2, ascending = false).foreach(println)
-
-  def base64Paser(base64String : String): String = {
-    var decoded= new BASE64Decoder().decodeBuffer(base64String)
+  def decodeBase64(base64String : String): String = {
+    val decoded = new BASE64Decoder().decodeBuffer(base64String)
     new String(decoded,"utf-8")
   }
 
-  def equip(str: String): String = {
+  def getDevice(str: String): String = {
     if (str.contains("CFNetwork") && str.contains("Darwin")) {
       "cfnetwork"
     } else if(str.contains("(iPhone")||str.contains("iPod")||str.contains("iOS")||str.contains("(iPad;")||str.contains("iPad4")){
