@@ -11,7 +11,7 @@ object CeAirParser extends App {
   val source = args(0)
   val target = args(1)
 
-  val conf =  new SparkConf().setAppName("CEAIR")
+  val conf =  new SparkConf().setAppName("CEAIR").setMaster("local")
   val sc = new SparkContext(conf)
 
   sc.textFile(source)
@@ -28,7 +28,7 @@ object CeAirParser extends App {
 
     val str1 = str.split("ceair.com/flight2014/")
     var rightStr = ""
-    if(str1(1).contains("booking")){ //some urls contain two "booking"
+    if(str1(1).contains("booking/")){ //some urls contain two "booking"
     val str2 = str1(1).split("booking/")
       rightStr=str2(1)
     } else {
@@ -52,6 +52,7 @@ object CeAirParser extends App {
         if (rightStr.charAt(3) != '-'){
           false
         } else {
+          println(rightStr.substring(0, 7))
           true
         }
       }
@@ -64,7 +65,7 @@ object CeAirParser extends App {
       return false
     }
     if(arr(1).contains("booking")){
-      ifAirLine(arr(1).split("booking"))
+      ifAirLine(arr(1).split("booking/"))
     }
     ifAirLine(arr)
   }

@@ -2,6 +2,7 @@ package platform.ali
 
 
 import _root_.util.CommonUtil
+import log.DCLogger
 import org.apache.spark.{SparkContext, SparkConf}
 
 /**
@@ -38,7 +39,7 @@ object AliParser extends App {
     if ((arr.length<2)||(arr1.length<2)) {
       return false
     }
-    if((arr(1).length<3)||(arr1(1).length<3)){
+    if((arr(1).length < 3)||(arr1(1).length < 3)){
       return false
     }
     if((!ifAirLine(arr(1))) || (!ifAirLine(arr1(1)))) {
@@ -49,10 +50,18 @@ object AliParser extends App {
   }
 
   def ifAirLine(str:String): Boolean = {
-    if (str.charAt(3) != '&'){
-      false
-    } else {
-      true
+    try {
+      if (str.charAt(3) != '&'){
+        println(str)
+        false
+      } else {
+        true
+      }
+    } catch {
+      case e: Exception =>
+        DCLogger.error(str)
+        DCLogger.exception(e)
+        false
     }
   }
 
