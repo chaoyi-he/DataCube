@@ -18,22 +18,21 @@ object CommonUtil {
   def getDevice(str: String): String = {
     if (str.contains("CFNetwork") && str.contains("Darwin")) {
       "CFNetwork"
-    } else if(str.contains("(iPhone")||str.contains("iPod")||str.contains("iOS")||str.contains("(iPad;")||str.contains("iPad4")){
+    } else if (str.contains("(iPhone")||str.contains("iPod")||str.contains("iOS")||str.contains("(iPad;")||str.contains("iPad4")){
       "IOS"
-    } else if(str.contains("Android")||str.contains("MIDP")){
+    } else if (str.contains("Android")||str.contains("MIDP")){
       "Android"
     } else if (str.contains("Windows Phone")) {
       "WindowsPhone"
     } else if (str.contains("Windows NT")||str.contains("LBBROWSER")||str.contains("X11")||str.contains("(Macintosh;") || str.contains("Windows XP") || str.contains("Windows 98") || str.contains("Windows ME")){
       "PC"
-    } else if(str.contains("python-requests")){
+    } else if (str.contains("python-requests")){
       "python-requests"
     } else if (str.contains("Symbian")) {
       "Symbian"
     } else if (str.contains("BlackBerry") || str.contains("BB10")) {
       "BlackBerry"
-    }
-    else {
+    } else {
       str
     }
   }
