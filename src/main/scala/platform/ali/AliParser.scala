@@ -7,7 +7,7 @@ import org.apache.spark.{SparkContext, SparkConf}
 /**
   * Created by niujiaojiao on 2016/2/19.
   */
-object AliParser extends App{
+object AliParser extends App {
 
   val source = args(0)
   val target = args(1)
@@ -26,7 +26,7 @@ object AliParser extends App{
     .sortBy(_._2,ascending = false).saveAsTextFile(target)
 
 
-  def extractAirLine(str:String): String ={
+  def extractAirLine(str:String): String = {
     val str1 = str.split("depCity=")
     val str2 = str.split("arrCity=")
     str1(1).substring(0,3).toUpperCase()+"-"+str2(1).substring(0,3).toUpperCase()
@@ -48,7 +48,7 @@ object AliParser extends App{
     }
   }
 
-  def ifAirLine(str:String): Boolean={
+  def ifAirLine(str:String): Boolean = {
     if (str.charAt(3) != '&'){
       false
     } else {
