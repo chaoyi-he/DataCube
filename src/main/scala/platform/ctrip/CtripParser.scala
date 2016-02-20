@@ -22,12 +22,12 @@ object CtripParser extends App {
     .filter(_.length == 5)
     .filter(x => x(3).contains("flights.ctrip.com/booking") && (x(2)!="NoDef"))
     .filter(x=> containsAirLine(x(3)))
-    .map(x=>(CommonUtil.getPrefix(x) + parse(x(3)),1))
+    .map(x=>(CommonUtil.getPrefix(x) + extractAirLine(x(3)),1))
     .reduceByKey(_+_)
     .sortBy(_._2,ascending = false).saveAsTextFile(target)
 
 
-  def parse(str:String): String ={
+  def extractAirLine(str:String): String ={
 
     val str1 = str.split("flights.ctrip.com/booking/")
     var rightStr = ""
