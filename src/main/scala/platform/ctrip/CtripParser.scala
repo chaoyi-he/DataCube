@@ -11,12 +11,8 @@ import org.apache.spark.{SparkContext, SparkConf}
 //根据样本数据: 统计每个设备上各个城市往返的航班的个数
 object CtripParser extends App {
 
-  var source = "file:///Users/yang/code/TEMP/000000_0"
-  var target = "file:///Users/yang/code/TEMP/result"
-  if (args.length > 0) {
-    source = args(0)
-    target = args(1)
-  }
+  val source = args(0)
+  val target = args(1)
 
   val conf =  new SparkConf().setAppName("CTRIP")
   val sc = new SparkContext(conf)
