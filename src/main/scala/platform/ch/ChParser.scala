@@ -10,12 +10,8 @@ object ChParser {
 
   def main(args: Array[String]): Unit = {
 
-    var source = "file:///Users/yang/code/TEMP/000000_0"
-    var target = "file:///Users/yang/code/TEMP/result"
-    if (args.length > 0) {
-      source = args(0)
-      target = args(1)
-    }
+    val source = args(0)
+    val target = args(1)
 
     val conf =  new SparkConf().setAppName("CH")
     val sc = new SparkContext(conf)
