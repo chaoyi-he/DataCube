@@ -1,7 +1,5 @@
 package platform.ctrip
 
-import java.text.SimpleDateFormat
-import java.util.Date
 import _root_.util.CommonUtil
 import org.apache.spark.{SparkContext, SparkConf}
 
@@ -22,63 +20,64 @@ object CtripParser extends App {
   sc.textFile(source)
     .map(_.split("\t"))
     .filter(_.length == 5)
-    .filter(x => x(3).contains("ctrip.com/") && (x(2)!="NoDef"))
-    .filter(x=> parse(x(3)) != "null")
+    .filter(x => x(3).contains("flights.ctrip.com/booking") && (x(2)!="NoDef"))
+    .filter(x=> containsAirLine(x(3)))
     .map(x=>(CommonUtil.getPrefix(x) + parse(x(3)),1))
     .reduceByKey(_+_)
-    .sortBy(_._2,ascending = false)
-    .saveAsTextFile(target)
+    .sortBy(_._2,ascending = false).saveAsTextFile(target)
+
 
   def parse(str:String): String ={
 
-    if(str.contains("flights.ctrip.com/booking")){
-
-      val str1 = str.split("flights.ctrip.com/booking/")
-      var rightStr = ""
-      if (str1.length < 2)
-        return "null"
-
-      if(str1(1).contains("booking")){ //some urls contain two "booking"
-        val str2 = str1(1).split("booking/")
-        if (str2.length < 2)
-          return "null"
-        rightStr=str2(1)
-      } else {
-        rightStr=str1(1)
+    val str1 = str.split("flights.ctrip.com/booking/")
+    var rightStr = ""
+    if(str1(1).contains("booking")){ //some urls contain two "booking"
+      val str2 = str1(1).split("booking/")
+      rightStr=str2(1)
       }
+    else {
+      rightStr = str1(1)
+    }
+      rightStr.substring(0,7)
+  }
 
-      val gt=parseCity(rightStr)
-
-      if(getCity(gt)!="airport") { // filter the "airport"
-        getCity(gt)
+  def containsAirLine(url: String): Boolean = {
+    val arr = url.split("flights.ctrip.com/booking/")
+    var rightStr=""
+    if (arr.length < 2) {
+      return false
+    } else if(arr(1).contains("booking")) {
+      //some urls contain two "booking"
+      val str2 = arr(1).split("booking/")
+      if(str2.length < 2){
+        return false
       } else {
-        "null"
+        rightStr= str2(1)
       }
-
     } else {
-      "null"
+      rightStr= arr(1)
+    }
+
+    if(rightStr.length < 7) {
+      false
+    } else {
+      ifAirLine(rightStr)
     }
   }
+
 
   // according the seventh char
-  def parseCity(str:String):String={
-    if (str.length < 7)
-      return "null"
+  def ifAirLine(str:String): Boolean={
     val st= str.charAt(7)
-    st match{
-      case '/' => str
-      case '-' => str
-      case _ =>"null"
+    if ((st >= 'a' && st <= 'z') || (st >= 'A' && st <= 'Z')) {
+      false
+    } else {
+      if (str.charAt(3) != '-' && str.charAt(3) != '.'){
+        false
+      } else {
+        true
+      }
     }
-  }
-
-  //get the first seven string : xxx-xxx
-  def getCity(str:String):String= {
-    var str1 = "null"
-    if (str.toString != "null") {
-      str1 = str.substring(0,7)
-    }
-    str1
   }
 
 }
