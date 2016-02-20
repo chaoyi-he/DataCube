@@ -34,11 +34,10 @@ object CtripParser extends App {
     if(str1(1).contains("booking")){ //some urls contain two "booking"
       val str2 = str1(1).split("booking/")
       rightStr=str2(1)
-      }
-    else {
+    } else {
       rightStr = str1(1)
     }
-      rightStr.substring(0,7)
+    rightStr.substring(0,7).toUpperCase()
   }
 
   def containsAirLine(url: String): Boolean = {

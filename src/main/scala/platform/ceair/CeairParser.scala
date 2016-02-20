@@ -6,7 +6,7 @@ import org.apache.spark.{SparkContext, SparkConf}
 /**
   * Created by niujiaojiao on 2016/2/19.
   */
-object CeairParser extends App{
+object CeAirParser extends App{
   val source = args(0)
   val target = args(1)
 
@@ -30,11 +30,10 @@ object CeairParser extends App{
     if(str1(1).contains("booking")){ //some urls contain two "booking"
     val str2 = str1(1).split("booking/")
       rightStr=str2(1)
-    }
-    else {
+    } else {
       rightStr = str1(1)
     }
-    rightStr.substring(0,7)
+    rightStr.substring(0,7).toUpperCase()
   }
 
   def containsAirLine(url: String): Boolean = {
@@ -42,7 +41,6 @@ object CeairParser extends App{
     var rightStr=""
     if (arr.length < 2) {
       return false
-    } else{
     }
     rightStr = arr(1)
     if(rightStr.length < 7) {
@@ -64,4 +62,5 @@ object CeairParser extends App{
       }
     }
   }
+
 }

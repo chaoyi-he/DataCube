@@ -45,9 +45,9 @@ object ChParser {
   def parse(url: String): String = {
     val arr = url.split("flights.ch.com/")
     if (arr(1).substring(0, 6) == "round-" && arr(1).charAt(9) == '-') {
-      arr(1).substring(6, 13)
+      arr(1).substring(6, 13).toUpperCase()
     } else if (arr(1).charAt(3) == '-') {
-      arr(1).substring(0, 7)
+      arr(1).substring(0, 7).toUpperCase()
     } else {
       ""
     }
