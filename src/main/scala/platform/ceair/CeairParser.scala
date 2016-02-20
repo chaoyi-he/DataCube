@@ -6,7 +6,8 @@ import org.apache.spark.{SparkContext, SparkConf}
 /**
   * Created by niujiaojiao on 2016/2/19.
   */
-object CeAirParser extends App{
+object CeAirParser extends App {
+
   val source = args(0)
   val target = args(1)
 
@@ -36,7 +37,7 @@ object CeAirParser extends App{
     rightStr.substring(0,7).toUpperCase()
   }
 
-  def AirLine(url: Array[String]): Boolean = {
+  def ifAirLine(url: Array[String]): Boolean = {
     if (url.length < 2) {
       return false
     }
@@ -44,32 +45,28 @@ object CeAirParser extends App{
     if(rightStr.length < 7) {
       false
     } else {
-      ifAirLine(rightStr)
+      val st= rightStr.charAt(7)
+      if ((st >= 'a' && st <= 'z') || (st >= 'A' && st <= 'Z')) {
+        false
+      } else {
+        if (rightStr.charAt(3) != '-'){
+          false
+        } else {
+          true
+        }
+      }
     }
   }
+
   def containsAirLine(url: String):Boolean={
     val arr = url.split("ceair.com/flight2014/")
-    var rightStr = ""
     if(arr.length <2){
       return false
     }
     if(arr(1).contains("booking")){
-      AirLine(arr(1).split("booking"))
+      ifAirLine(arr(1).split("booking"))
     }
-    AirLine(arr)
-  }
-
-  def ifAirLine(str:String): Boolean={
-    val st= str.charAt(7)
-    if ((st >= 'a' && st <= 'z') || (st >= 'A' && st <= 'Z')) {
-      false
-    } else {
-      if (str.charAt(3) != '-'){
-        false
-      } else {
-        true
-      }
-    }
+    ifAirLine(arr)
   }
 
 }

@@ -8,6 +8,7 @@ import org.apache.spark.{SparkContext, SparkConf}
   * Created by niujiaojiao on 2016/2/19.
   */
 object AliParser extends App{
+
   val source = args(0)
   val target = args(1)
 
@@ -18,7 +19,7 @@ object AliParser extends App{
     .map(_.split("\t"))
     .filter(_.length == 5)
     .filter(x => x(3).contains("alitrip.com/") && (x(2)!="NoDef")
-     && (x(3).contains("depCity=")) && (x(3).contains("arrCity=")))
+     && x(3).contains("depCity=") && x(3).contains("arrCity="))
     .filter(x=> containsAirLine(x(3)))
     .map(x=>(CommonUtil.getPrefix(x) +extractAirLine(x(3)),1))
     .reduceByKey(_+_)
@@ -41,9 +42,9 @@ object AliParser extends App{
       return false
     }
     if((!ifAirLine(arr(1))) || (!ifAirLine(arr1(1)))) {
-      return false
+      false
     }else{
-      return true
+      true
     }
   }
 
