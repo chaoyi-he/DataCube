@@ -36,18 +36,27 @@ object CeAirParser extends App{
     rightStr.substring(0,7).toUpperCase()
   }
 
-  def containsAirLine(url: String): Boolean = {
-    val arr = url.split("ceair.com/flight2014/")
-    var rightStr=""
-    if (arr.length < 2) {
+  def AirLine(url: Array[String]): Boolean = {
+    if (url.length < 2) {
       return false
     }
-    rightStr = arr(1)
+    val rightStr = url(1)
     if(rightStr.length < 7) {
       false
     } else {
       ifAirLine(rightStr)
     }
+  }
+  def containsAirLine(url: String):Boolean={
+    val arr = url.split("ceair.com/flight2014/")
+    var rightStr = ""
+    if(arr.length <2){
+      return false
+    }
+    if(arr(1).contains("booking")){
+      AirLine(arr(1).split("booking"))
+    }
+    AirLine(arr)
   }
 
   def ifAirLine(str:String): Boolean={
