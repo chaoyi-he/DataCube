@@ -6,13 +6,15 @@ scalaVersion := "2.10.4"
 
 ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) }
 
-libraryDependencies += "org.scala-lang" % "scala-compiler" % "2.10.4"
+libraryDependencies += "org.scala-lang" % "scala-compiler" % "2.10.4" % "provided"
 
 libraryDependencies += "org.apache.hadoop" % "hadoop-common" % "2.7.1" % "provided" excludeAll ExclusionRule(organization = "javax.servlet")
 
-libraryDependencies += "org.apache.hadoop" % "hadoop-client" % "2.7.1"
+libraryDependencies += "org.apache.hadoop" % "hadoop-client" % "2.7.1" % "provided"
 
-libraryDependencies += "org.apache.spark" % "spark-core_2.10" % "1.5.2"
+libraryDependencies += "org.apache.spark" % "spark-core_2.10" % "1.5.2" % "provided"
+
+libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.38"
 
 assemblyMergeStrategy in assembly := {
   case PathList("javax", "servlet", xs @ _*) => MergeStrategy.last

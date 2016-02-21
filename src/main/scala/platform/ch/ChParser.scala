@@ -10,12 +10,8 @@ object ChParser {
 
   def main(args: Array[String]): Unit = {
 
-    var source = "file:///Users/yang/code/TEMP/000000_0"
-    var target = "file:///Users/yang/code/TEMP/result"
-    if (args.length > 0) {
-      source = args(0)
-      target = args(1)
-    }
+    val source = args(0)
+    val target = args(1)
 
     val conf =  new SparkConf().setAppName("CH")
     val sc = new SparkContext(conf)
@@ -49,9 +45,9 @@ object ChParser {
   def parse(url: String): String = {
     val arr = url.split("flights.ch.com/")
     if (arr(1).substring(0, 6) == "round-" && arr(1).charAt(9) == '-') {
-      arr(1).substring(6, 13)
+      arr(1).substring(6, 13).toUpperCase()
     } else if (arr(1).charAt(3) == '-') {
-      arr(1).substring(0, 7)
+      arr(1).substring(0, 7).toUpperCase()
     } else {
       ""
     }

@@ -17,16 +17,21 @@ object CommonUtil {
 
   def getDevice(str: String): String = {
     if (str.contains("CFNetwork") && str.contains("Darwin")) {
-      "cfnetwork"
-    } else if(str.contains("(iPhone")||str.contains("iPod")||str.contains("iOS")||str.contains("(iPad;")||str.contains("iPad4")){
-      "ios"
-    } else if(str.contains("Android")||str.contains("MIDP")){
-      println("Android")
-      "android"
-    }else if(str.contains("Windows NT")||str.contains("LBBROWSER")||str.contains("X11")||str.contains("(Macintosh;")){
-      "pc"
-    }else if(str.contains("python-requests")){
+      "CFNetwork"
+    } else if (str.contains("(iPhone")||str.contains("iPod")||str.contains("iOS")||str.contains("(iPad;")||str.contains("iPad4")){
+      "IOS"
+    } else if (str.contains("Android")||str.contains("MIDP")){
+      "Android"
+    } else if (str.contains("Windows Phone")) {
+      "WindowsPhone"
+    } else if (str.contains("Windows NT")||str.contains("LBBROWSER")||str.contains("X11")||str.contains("(Macintosh;") || str.contains("Windows XP") || str.contains("Windows 98") || str.contains("Windows ME")){
+      "PC"
+    } else if (str.contains("python-requests")){
       "python-requests"
+    } else if (str.contains("Symbian")) {
+      "Symbian"
+    } else if (str.contains("BlackBerry") || str.contains("BB10")) {
+      "BlackBerry"
     } else {
       str
     }
@@ -50,6 +55,6 @@ object CommonUtil {
   }
 
   def getPrefix(arr: Array[String]):String = {
-    parseDate(arr(0)) + ":" + parseDevice(arr(2)) + ":"
+    parseDate(arr(0)) + "-->>" + parseDevice(arr(2)) + "-->>"
   }
 }
