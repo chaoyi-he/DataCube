@@ -5,6 +5,7 @@ import org.jsoup.Jsoup
 import sun.misc.BASE64Decoder
 
 import scala.collection.mutable
+import scala.io.Source
 
 /**
   * Created by yangshuai on 2016/2/18.
@@ -77,6 +78,14 @@ object CommonUtil {
 
   }
 
+  def readCodeMap(): Unit ={
+    val source=Source.fromFile("/Users/hechaoyi/Documents/KunYan/DataCube/src/main/resource/AirPortCode")
+    val itera= source.getLines()
+    for(line<-itera){
+      println(line.toString())
+      codeMap.put(line.split('*')(0),line.split('*')(1))
+    }
+  }
   def convertAirLine(line: String): String = {
 
     val arr = line.split("-")
@@ -106,6 +115,7 @@ object CommonUtil {
   }
 
   def main(args: Array[String]): Unit = {
-    initCodeMap()
+    //initCodeMap()
+    readCodeMap()
   }
 }
