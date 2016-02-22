@@ -14,7 +14,9 @@ libraryDependencies += "org.apache.hadoop" % "hadoop-client" % "2.7.1" % "provid
 
 libraryDependencies += "org.apache.spark" % "spark-core_2.10" % "1.5.2" % "provided"
 
-libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.38"
+libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.38" % "provided"
+
+libraryDependencies += "org.jsoup" % "jsoup" % "1.8.3" % "provided"
 
 assemblyMergeStrategy in assembly := {
   case PathList("javax", "servlet", xs @ _*) => MergeStrategy.last
