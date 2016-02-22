@@ -11,7 +11,7 @@ object CeAirParser extends App {
   val source = args(0)
   val target = args(1)
 
-  val conf =  new SparkConf().setAppName("CEAIR").setMaster("local")
+  val conf =  new SparkConf().setAppName("CEAIR")
   val sc = new SparkContext(conf)
 
   sc.textFile(source)
@@ -52,7 +52,6 @@ object CeAirParser extends App {
         if (rightStr.charAt(3) != '-'){
           false
         } else {
-          println(rightStr.substring(0, 7))
           true
         }
       }
