@@ -1,9 +1,10 @@
 package platform.ali
 
 
+import java.net.URLDecoder
+
 import _root_.util.CommonUtil
-import log.DCLogger
-import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.spark.{SparkConf, SparkContext}
 
 /**
   * Created by niujiaojiao on 2016/2/19.
@@ -12,7 +13,6 @@ object AliParser extends App {
 
   val source = args(0)
   val target = args(1)
-
   val conf =  new SparkConf().setAppName("ALI")
   val sc = new SparkContext(conf)
 
@@ -20,49 +20,63 @@ object AliParser extends App {
     .map(_.split("\t"))
     .filter(_.length == 5)
     .filter(x => x(3).contains("alitrip.com/") && (x(2)!="NoDef")
-     && x(3).contains("depCity=") && x(3).contains("arrCity="))
+     && x(3).contains("depCityName=") && x(3).contains("arrCityName="))
     .filter(x=> containsAirLine(x(3)))
     .map(x=>(CommonUtil.getPrefix(x) +extractAirLine(x(3)),1))
     .reduceByKey(_+_)
     .sortBy(_._2,ascending = false).saveAsTextFile(target)
 
 
-  def extractAirLine(str:String): String = {
-    val str1 = str.split("depCity=")
-    val str2 = str.split("arrCity=")
-    str1(1).substring(0,3).toUpperCase()+"-"+str2(1).substring(0,3).toUpperCase()
+  def extractAirLine(url: String): String = {
+    var substring = ""
+    var left = ""
+    var right = ""
+    if (url.contains("&depCityName=") && url.contains("&arrCityName=")) {
+      substring = url.split("&depCityName=")(1)
+      left = substring.split("&arrCityName=")(0)
+      right = substring.split("&arrCityName=")(1).split('&')(0)
+    }
+    decodeString(left) + "-" + decodeString(right)
   }
 
   def containsAirLine(url: String): Boolean = {
-    val arr = url.split("depCity=")
-    val arr1 = url.split("arrCity=")
-    if ((arr.length<2)||(arr1.length<2)) {
-      return false
-    }
-    if((arr(1).length < 3)||(arr1(1).length < 3)){
-      return false
-    }
-    if((!ifAirLine(arr(1))) || (!ifAirLine(arr1(1)))) {
+    if (url.contains("&depCityName=") && url.contains("&arrCityName=")) {
+      val tempFrom = url.split("&depCityName=")
+      if (tempFrom.length < 2) {
+        false
+      } else {
+        ifAirLine(tempFrom(1), "&depCityName=")
+      }
+    } else false
+  }
+
+
+  def ifAirLine(str: String,keyword:String): Boolean= {
+
+    if(keyword=="&depCityName="){
+
+      val parsefrom = str.split("&arrCityName=")
+
+      if(parsefrom.length<2){
+        false
+      } else {
+        ifExistChar(parsefrom(1))
+      }
+    } else {
       false
-    }else{
-      true
     }
   }
 
-  def ifAirLine(str:String): Boolean = {
-    try {
-      if (str.charAt(3) != '&'){
-        println(str)
-        false
-      } else {
-        true
-      }
-    } catch {
-      case e: Exception =>
-        DCLogger.error(str)
-        DCLogger.exception(e)
-        false
+  def ifExistChar(str:String): Boolean={
+    val temp = str.split('&')
+    true
+  }
+
+  def decodeString(str:String):String= {
+    val temp:String={
+      URLDecoder.decode(str, "UTF8")
     }
+    temp
   }
 
 }
