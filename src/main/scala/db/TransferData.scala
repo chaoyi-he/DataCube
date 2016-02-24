@@ -21,18 +21,18 @@ object TransferData extends App {
   val password = "hadoop"
   var connection: Connection = _
 
-  val file = new File("/Users/yang/code/TEMP/travel/result/qn/part-00000")
+  val file = new File("E:/part-00000")
   var line = ""
 
   try {
     Class.forName(driver)
     connection = DriverManager.getConnection(url, username, password)
     connection.setAutoCommit(false)
-    val insertStr = "insert into temp_qn (platform, date, hour, device, line, count) values (?, ?, ?, ?, ?, ?)"
+    val insertStr = "insert into lines_get (platform, date, hour, device, line, count) values (?, ?, ?, ?, ?, ?)"
     val ps = connection.prepareStatement(insertStr)
 
     var i = 0
-
+//    val writer = new PrintWriter(new File("E:/DataCube/src/main/resource/test.txt" ))
     Files.readLines(file, Charset.forName("utf-8")).toArray.foreach(line => {
 
       val length = line.toString.length - 1
@@ -46,26 +46,32 @@ object TransferData extends App {
         val device = arr(1)
         val arr2 = arr(2).split(",")
         val airLine = arr2(0)
-        val count = arr2(1).toInt
 
-        ps.setString(1, "qn")
-        ps.setString(2, date)
-        ps.setInt(3, hour.toInt)
-        ps.setString(4, device)
-        ps.setString(5, CommonUtil.convertAirLine(airLine))
-        ps.setInt(6, count)
+        val airLineCn = CommonUtil.convertAirLine(airLine)
 
-        ps.addBatch()
+        /*if(airLineCn!="") {
+          writer.write(airLineCn + "\n")
+        }*/
+        if (airLineCn!="none") {
+          val count = arr2(1).toInt
 
-        if (i % 1000 == 0)
-          ps.executeBatch()
+          ps.setString(1, "qn")
+          ps.setString(2, date)
+          ps.setInt(3, hour.toInt)
+          ps.setString(4, device)
+          ps.setString(5, airLineCn)
+          ps.setInt(6, count)
 
-        i += 1
+          ps.addBatch()
 
+          if (i % 1000 == 0)
+            ps.executeBatch()
+
+          i += 1
+        }
       }
-
     })
-
+//    writer.close()
     ps.executeBatch()
     connection.commit()
 

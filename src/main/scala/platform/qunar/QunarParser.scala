@@ -4,7 +4,7 @@ import _root_.util.CommonUtil
 import org.apache.spark.{SparkContext, SparkConf}
 import java.net.URLDecoder
 /**
-  * Created by Administrator on 2016/2/20.
+  * Created by niujiaojiao on 2016/2/20.
   */
 object QunarParser extends App {
 

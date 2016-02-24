@@ -1,9 +1,7 @@
 package util
 
 import java.text.SimpleDateFormat
-import org.jsoup.Jsoup
 import sun.misc.BASE64Decoder
-
 import scala.collection.mutable
 import scala.io.Source
 
@@ -63,29 +61,17 @@ object CommonUtil {
     parseDate(arr(0)) + "-->>" + parseDevice(arr(2)) + "-->>"
   }
 
-  def initCodeMap(): Unit = {
-    val sourceUrl = "http://www.hlhkys.com/dmair/cx.asp?Field=&keyword=&MaxPerPage=50&page=1"
-    for (i <- 1 to 68) {
-      val doc = Jsoup.connect(sourceUrl + i).get()
-      val trs = doc.body().getElementsByTag("table").get(2).child(0).child(0).child(0).child(0).getElementsByTag("tr")
-      println(i + "-->>" + trs.size())
-      for (j <- 1 until trs.size()) {
-        val ch = trs.get(j).child(0).child(0).text().substring(1)
-        val en = trs.get(j).child(1).text()
-        codeMap.put(ch, en)
-      }
-    }
-
-  }
-
-  def readCodeMap(): Unit ={
-    val source=Source.fromFile("/Users/hechaoyi/Documents/KunYan/DataCube/src/main/resource/AirPortCode")
+  def initCodeMap(): Unit ={
+    val source=Source.fromFile("E:/DataCube/src/main/resource/UsageAirPort")
     val itera= source.getLines()
     for(line<-itera){
-      println(line.toString())
-      codeMap.put(line.split('*')(0),line.split('*')(1))
+       val arr = line.split('*')
+      if(arr.length==2) {
+        codeMap.put(line.split('*')(0), line.split('*')(1))
+      }
     }
   }
+
   def convertAirLine(line: String): String = {
 
     val arr = line.split("-")
@@ -98,24 +84,36 @@ object CommonUtil {
     var depCn = arr(0)
     var arriveCn = arr(1)
 
-    if (depCn.contains("(")) {
-      depCn = depCn.substring(0, depCn.indexOf('('))
+    val airLine: Array[String] = Array("(", "（")
+    if (depCn.contains(airLine(0))) {
+      depCn = depCn.substring(0, depCn.indexOf(airLine(0)))
+    } else if (depCn.contains(airLine(1))) {
+      depCn = depCn.substring(0, depCn.indexOf(airLine(1)))
     }
 
-    if (arriveCn.contains("(")) {
-      arriveCn = arriveCn.substring(0, arriveCn.indexOf('('))
+    if (arriveCn.contains(airLine(0))) {
+      arriveCn = arriveCn.substring(0, arriveCn.indexOf(airLine(0)))
+    } else if (arriveCn.contains(airLine(1))) {
+      arriveCn = arriveCn.substring(0, arriveCn.indexOf(airLine(1)))
     }
 
-    val dep = codeMap.getOrElse(depCn, depCn)
-    val arrive = codeMap.getOrElse(arriveCn, arriveCn)
+    /*if(codeMap.getOrElse(depCn,1)==1)
+    {
+       depCn
+    }else if(codeMap.getOrElse(arriveCn,1)==1){
+      arriveCn
+    }else{
+      ""
+    }*/
 
-    println(dep + "-" + arrive)
+    if(codeMap.getOrElse(depCn,1)==1||codeMap.getOrElse(arriveCn,1)==1)
+      {
+        "none"
+      }
+    else {
+      codeMap.getOrElse(depCn,1)+"-"+codeMap.getOrElse(arriveCn,1)
+    }
 
-    dep + "-" + arrive
   }
 
-  def main(args: Array[String]): Unit = {
-    //initCodeMap()
-    readCodeMap()
-  }
 }
